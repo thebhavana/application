@@ -1,0 +1,223 @@
+<style>
+  /* Navbar container */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+ 
+  /* Logo/brand */
+  .navbar-logo .brand-link {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+ 
+  /* Desktop search form container */
+  .navbar-search {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    margin: 0 10px;
+  }
+  .navbar-search .nav-search-input {
+    width: 600px;
+    max-width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    font-size: 14px;
+  }
+  .navbar-search .nav-search-button {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    background-color: #0056b3;
+    color: white;
+    cursor: pointer;
+  }
+  .navbar-search .nav-search-button:hover {
+    background-color: #004494;
+  }
+ 
+  /* Desktop menu links */
+  .navbar-menu {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  .navbar-menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .navbar-menu a:hover {
+    text-decoration: underline;
+  }
+ 
+  /* Right side: profile image + hamburger */
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+  .profile-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+  }
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+  }
+  .hamburger span {
+    height: 3px;
+    width: 25px;
+    background: white;
+    margin: 3px 0;
+    border-radius: 3px;
+  }
+ 
+  /* Mobile menu (hidden by default) */
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    background-color: #007bff;
+    padding: 10px 16px;
+  }
+  .mobile-menu a {
+    color: white;
+    text-decoration: none;
+    margin: 5px 0;
+    font-weight: 500;
+  }
+  .mobile-menu.active {
+    display: flex;
+  }
+  /* Mobile search inside mobile menu */
+  .mobile-menu .search-form-mobile {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  .mobile-menu .nav-search-input-mobile {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .mobile-menu .nav-search-button-mobile {
+    padding: 6px 10px;
+    margin-left: 5px;
+    border: none;
+    background-color: #0056b3;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .mobile-menu .nav-search-button-mobile:hover {
+    background-color: #004494;
+  }
+ 
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .navbar-menu {
+      display: none;
+    }
+
+    .hamburger {
+      display: flex;
+    }
+    .navbar-search{
+      display: none;
+    }
+  }
+</style>
+ 
+<nav class="navbar">
+  <!-- Logo -->
+  <div class="navbar-logo">
+    <%= link_to "MyApp", root_path, class: "brand-link" %>
+  </div>
+ 
+  <!-- Desktop search -->
+  <div class="navbar-search">
+  <%= form_with url: request.path, method: :get, local: true, class: "search-form" do |form| %>
+  <div class="search-container">
+  <%= form.text_field :query, placeholder: "Search articles...", value: nil , class: "nav-search-input" %>
+  <%= form.submit "🔍", class: "nav-search-button" %>
+  </div>
+  <% end %>
+  </div>
+ 
+  <!-- Desktop navigation links -->
+  <div class="navbar-menu">
+    <% if user_signed_in? %>
+      <%= link_to "New Article", new_article_path %>
+      <%= link_to "Explore Articles", articles_path %>
+      <%= link_to "My Articles", my_articles_path %>
+      <%= link_to "Liked Articles", liked_articles_path %>
+      <%= link_to "Bookmarked Articles", bookmarked_articles_path %>
+      <%= link_to "Edit Profile", edit_user_path(current_user) %>
+      <%= link_to "Logout", destroy_user_session_path, method: :delete %>
+    <% else %>
+      <%= link_to "Login", new_user_session_path %>
+    <% end %>
+  </div>   
+ 
+  <!-- Profile image + hamburger -->
+  <div class="navbar-right">
+    <% if user_signed_in? && current_user.profile_picture.attached? %>
+      <%= image_tag url_for(current_user.profile_picture), alt: "Profile", class: "profile-img" %>
+    <% end %>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</nav>
+ 
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <!-- Search in mobile menu -->
+
+    <!-- Search in mobile menu -->
+   <%= form_with url: request.path, method: :get, local: true, class: "search-form-mobile" do |form| %>
+  <%= form.text_field :query, placeholder: "Search articles...", value: params[:query], class: "nav-search-input-mobile" %>
+  <%= form.submit "🔍", class: "nav-search-button-mobile" %>
+ 
+  <% end %>
+  <% if user_signed_in? %>
+    <%= link_to "New Article", new_article_path %>
+    <%= link_to "Explore Articles", articles_path %>
+    <%= link_to "My Articles", my_articles_path %>
+    <%= link_to "Liked Articles", liked_articles_path %>
+    <%= link_to "Bookmarked Articles", bookmarked_articles_path %>
+    <%= link_to "Edit Profile", edit_user_path(current_user) %>
+    <%= link_to "Logout", destroy_user_session_path, method: :delete %>
+  <% else %>
+    <%= link_to "Login", new_user_session_path %>
+  <% end %>
+</div>
+ 
+<script>
+  function toggleMenu() {
+    const mobileMenu = document.getElementById("mobileMenu");
+    mobileMenu.classList.toggle("active");
+  }
+</script>
+ 

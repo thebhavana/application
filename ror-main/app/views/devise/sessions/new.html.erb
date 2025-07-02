@@ -1,0 +1,92 @@
+<style>
+
+  .login-container {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 30px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #fefefe;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+  }
+ 
+  .login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+ 
+  .login-container .field {
+    margin-bottom: 15px;
+  }
+
+  .login-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+  }
+ 
+  .login-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+  }
+ 
+  .login-container .actions {
+    text-align: center;
+    margin-top: 20px;
+  }
+ 
+  .login-container input[type="submit"] {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+ 
+  .login-container input[type="submit"]:hover {
+    background-color: #2980b9;
+  }
+ 
+  .login-container .links {
+    text-align: center;
+    margin-top: 10px;
+  }
+</style>
+ 
+<div class="login-container">
+<h2>Log In</h2>
+ 
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+<div class="field">
+<%= f.label :email %>
+<%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+</div>
+ 
+    <div class="field">
+<%= f.label :password %>
+<%= f.password_field :password, autocomplete: "current-password" %>
+</div>
+ 
+    <% if devise_mapping.rememberable? %>
+<div class="field">
+<%= f.check_box :remember_me %>
+<%= f.label :remember_me %>
+</div>
+<% end %>
+ 
+    <div class="actions">
+<%= f.submit "Log in" %>
+</div>
+<% end %>
+ 
+  <div class="links">
+<%= render "devise/shared/links" %>
+</div>
+</div>    

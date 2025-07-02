@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Blog" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  
+  <style>
+    .flash.notice{
+      background-color: #d4edda;
+      color: #155724;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .flash.alert{
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      margin: 10px 0;
+    }
+  </style>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+console.log("flash script running")
+document.querySelectorAll('[data-dismiss="flash"]').forEach(msg => setTimeout(()=> msg.remove(),3000));
+  });
+  </script>
+  </head>
+
+  <body>
+    <%# Added for comon navbar on all pages%>
+    <% unless devise_controller? && (controller_name == "sessions" || controller_name == "registrations") %>
+      <%= render"shared/navbar" %>
+     <% end %>
+
+    <% flash.each do |key,message| %>
+    <div class ="flash <%= key %>" data-dismiss="flash">
+      <p><%= message %></p>
+    </div>
+    <% end %>
+
+    <%= yield %>
+
+  </body>
+</html

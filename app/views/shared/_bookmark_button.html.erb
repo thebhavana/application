@@ -1,0 +1,6 @@
+
+ <% if article.bookmarks.exists?(user: current_user) %>
+<%= link_to "🔖 Unbookmark", bookmark_article_path(article), method: :post %>
+<% else %>
+<%= link_to "📌 Bookmark", bookmark_article_path(article), method: :post %>
+<% end %>

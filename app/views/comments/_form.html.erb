@@ -1,0 +1,10 @@
+<%= form_with(model: [article, Comment.new], local: true) do |form| %>
+<div style="margin-top: 10px;">
+<%= form.text_area :body, placeholder: "Write a comment...", rows: 2, style: "width: 100%;" %>
+</div>
+<div style="margin-top: 5px;">
+<%= form.submit 'Post', class: 'btn-success' %>
+</div>
+<% end %>
+
+ 

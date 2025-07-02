@@ -1,0 +1,42 @@
+<h2>Chat Room</h2>
+<div id="messages" style="height: 300px; overflow-y :scroll; border: 1px solid #ccc; padding: 10px;">
+
+<% @messages.each do |msg| %>
+<div>
+    <strong><%= msg.user.email %>:</strong>
+    <%= msg.content %>
+    <small><%= msg.created_at.strftime('%H:%M') %></small>
+    <% end %>
+</div>
+
+<form id="message_form">
+<%= hidden_field_tag :room_id, @room.id %>
+<%= text_field_tag :message,'', placeholder: 'Type your message', id: 'message_input' %>
+<%= submit_tag 'Send' %>
+</form>
+
+
+<script>
+    const roomId = <%= @room.id %>;
+    App.room = App.cable.subscriptions.create{
+        { channel: "RoomChannel", room_id: roomId },
+        {
+            recieved(data){
+                const newMessage = '<div><strong>${data.user}:</strong> ${data.message} <small>${data.timestamp}</small></div>';
+                document.getElementById("messages").innerHTML += newMessage;
+                document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+            },
+
+            speak: function(message) {
+                return this.perform('speak', { message: message }) ;
+            }
+        }
+    };
+
+    document.getElementById("message_form").addEventListener("submit", function(e){
+        e.preventDefault();
+        const input = document.getElementById("message_input");
+        App.room.speak(input.value);
+        input.value = "";
+    });
+</script>

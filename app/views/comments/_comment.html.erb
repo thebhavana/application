@@ -1,0 +1,31 @@
+
+ <div id="comment-<%= comment.id %>" class="comment-item" style="padding: 5px 0;">
+<% if user_signed_in? && comment.user == current_user %>
+<!-- Display mode -->
+<div id="comment-display-<%= comment.id %>" style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+<strong><%= comment.user.username %>:</strong>
+<span id="comment-body-<%= comment.id %>"><%= comment.body %></span>
+</div>
+<div style="display: flex; gap: 10px;">
+<button onclick="showEditForm(<%= comment.id %>)" title="Edit">✏️</button>
+<%= link_to "🗑️", article_comment_path(comment.article, comment), method: :delete, data: { confirm: "Delete?" }, title: "Delete" %>
+</div>
+</div>
+ 
+    <!-- Edit mode (initially hidden) -->
+<div id="comment-edit-<%= comment.id %>" style="display: none;">
+<%= form_with(model: [comment.article, comment], local: true) do |f| %>
+<%= f.text_field :body, value: comment.body, style: "width: 70%;" %>
+<%= f.submit "Save", class: "btn btn-sm btn-success" %>
+<button type="button" onclick="cancelEditForm(<%= comment.id %>)" class="btn btn-sm">Cancel</button>
+<% end %>
+</div>
+<% else %>
+<!-- Read-only comment for other users -->
+<strong><%= comment.user.username %>:</strong>
+<%= comment.body %>
+<% end %>
+</div>
+
+ 
